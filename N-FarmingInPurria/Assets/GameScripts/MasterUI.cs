@@ -1,35 +1,33 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.UI;
 
 public class MasterUI : MonoBehaviour
 {
+    public static MasterUI Instance;
+    [Header("STANDARD USER UI")]
+    public List<Button> STANDARDUSERINGAMEUI;
+    public Canvas STANDARDUSERUICANVAS;
+    [Header("REGISTRATION AND LOGIN UI")]
+    public Canvas FULLLOGINANDREGISTRATIONUI;
+    public Canvas REGISTRATIONUI;
+    public Canvas LOGINUI;
+    [Header("MASTER USER UI")]
+    public List<Button> MASTERDUSERINGAMEUI;
 
-    public RectTransform menu;
+    private void Awake()
+    {
+        Instance = this;
+    }
+
     // Start is called before the first frame update
     void Start()
     {
         
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-        menu.transform.position = Vector2.MoveTowards(menu.transform.position, new Vector2(2f, 50f), 0.09f);
-
-    }
 
 
-    public void OpenOrCloseSlide(RectTransform menu)
-    {
-        StartCoroutine(MovePanel(4f, menu));
-    }
-
-    IEnumerator MovePanel(float waitTime, RectTransform menu)
-    {
-        yield return new WaitForSeconds(0);
-
-    }
+  
 }
