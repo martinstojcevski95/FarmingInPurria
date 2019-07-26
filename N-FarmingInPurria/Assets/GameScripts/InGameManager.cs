@@ -1,7 +1,6 @@
 ﻿using Firebase;
 using Firebase.Database;
 using Firebase.Unity.Editor;
-using Proyecto26;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -26,7 +25,7 @@ public class InGameManager : MonoBehaviour
 
         FirebaseApp.DefaultInstance.SetEditorDatabaseUrl(DATABASEURL);
         reference = FirebaseDatabase.DefaultInstance.RootReference;
-        RetreiveData();
+     //   RetreiveData();
 
     }
 
@@ -45,6 +44,13 @@ public class InGameManager : MonoBehaviour
           {
               DataSnapshot snapshot = task.Result;
               Debug.Log(snapshot.GetRawJsonValue());
+              if (snapshot.GetRawJsonValue() == null)
+              {
+                  MasterUserManager.Instance.MasterContractID = 0;
+                  PlayerPrefs.SetInt("mstrcontractcounter", MasterUserManager.Instance.MasterContractID);
+                  MasterUserManager.Instance.MasterContractID = PlayerPrefs.GetInt("mstrcontractcounter", MasterUserManager.Instance.MasterContractID);
+                  Debug.Log("mstrcounter now is " + MasterUserManager.Instance.MasterContractID);
+              }
               // Do something with snapshot...
           }
       });

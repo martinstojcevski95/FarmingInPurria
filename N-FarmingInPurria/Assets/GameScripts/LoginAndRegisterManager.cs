@@ -34,6 +34,7 @@ public class LoginAndRegisterManager : MonoBehaviour
     }
 
 
+
     //TODO --> SAVE USERNAME AND SURNAME IN DB 
 
     void DissableAllButtonsAtStart()
@@ -75,6 +76,11 @@ public class LoginAndRegisterManager : MonoBehaviour
 
             // Firebase user has been created.
             Firebase.Auth.FirebaseUser newUser = task.Result;
+
+
+            MasterUserManager.Instance.MasterContractID = 0;
+            MasterUserManager.Instance.MasterContractID = PlayerPrefs.GetInt("mstrcontractcounter", MasterUserManager.Instance.MasterContractID);
+            Debug.Log("resetting masterContractID on new user");
             Debug.LogFormat("Firebase user created successfully: {0} ({1})",
                 newUser.DisplayName, newUser.UserId);
         });
@@ -102,6 +108,8 @@ public class LoginAndRegisterManager : MonoBehaviour
             USERID = newUser.UserId;
             AddPrefixToEachUser(newUser.UserId);
             Debug.LogFormat("User signed in successfully: {0} ({1})", newUser.DisplayName, newUser.UserId);
+            ManageFieldsManager.Instance.RetreiveDataForFieldPlants();
+            //MasterUserManager.Instance.startDailyTimer = PlayerPrefs.GetInt("dailytimer");
         });
 
         StartCoroutine(AfterLogIn(isLoggedIn));
