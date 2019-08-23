@@ -14,7 +14,7 @@ public class ManageContract : MonoBehaviour
     public List<SingleContractForManaging> ContractsForManaging = new List<SingleContractForManaging>();
 
     public static ManageContract Instance;
-
+    public bool areThereActiveContracts;
     private void Awake()
     {
         Instance = this;
@@ -24,7 +24,7 @@ public class ManageContract : MonoBehaviour
     {
         FirebaseApp.DefaultInstance.SetEditorDatabaseUrl(DATABASEURL);
         reference = FirebaseDatabase.DefaultInstance.RootReference;
-
+        areThereActiveContracts = true;
     }
 
 
@@ -50,6 +50,7 @@ public class ManageContract : MonoBehaviour
     
               if (Contracts != null)
               {
+                  areThereActiveContracts = true;
                   //MasterUserManager.Instance.MasterContractID = 0;
                   //PlayerPrefs.SetInt("mstrcontractcounter", MasterUserManager.Instance.MasterContractID);
                   //MasterUserManager.Instance.MasterContractID = PlayerPrefs.GetInt("mstrcontractcounter", MasterUserManager.Instance.MasterContractID);
@@ -90,6 +91,8 @@ public class ManageContract : MonoBehaviour
               }
               else
               {
+                  Debug.Log("nema DOGOVORI");
+                  areThereActiveContracts = false;
                   ContractsForManaging[0].SingleContract.ContractDescription = "";
                   ContractsForManaging[0].SingleContract.ContractID = 0;
                   ContractsForManaging[0].SingleContract.isContractStarted = false;

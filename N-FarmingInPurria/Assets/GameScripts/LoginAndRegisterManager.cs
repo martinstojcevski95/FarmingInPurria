@@ -14,7 +14,6 @@ public class LoginAndRegisterManager : MonoBehaviour
 
     public string CustomMasterUserID;
     public static LoginAndRegisterManager Instance;
-
     private void Awake()
     {
         Instance = this;
@@ -87,33 +86,89 @@ public class LoginAndRegisterManager : MonoBehaviour
     }
 
 
-    public void LogIn()
+    public void LogIn(GameObject Loader)
     {
-
-        auth.SignInWithEmailAndPasswordAsync(LogInEmail.text, LogInPassword.text).ContinueWith(task =>
-        {
-            if (task.IsCanceled)
-            {
-                Debug.LogError("SignInWithEmailAndPasswordAsync was canceled.");
-                return;
-            }
-            if (task.IsFaulted)
-            {
-                Debug.LogError("SignInWithEmailAndPasswordAsync encountered an error: " + task.Exception);
-                return;
-            }
-
-            Firebase.Auth.FirebaseUser newUser = task.Result;
-            isLoggedIn = true;
-            USERID = newUser.UserId;
-            AddPrefixToEachUser(newUser.UserId);
-            Debug.LogFormat("User signed in successfully: {0} ({1})", newUser.DisplayName, newUser.UserId);
-            ManageFieldsManager.Instance.RetreiveDataForFieldPlants();
-            //MasterUserManager.Instance.startDailyTimer = PlayerPrefs.GetInt("dailytimer");
-        });
-
-        StartCoroutine(AfterLogIn(isLoggedIn));
+        Loader.SetActive(true);
+        StartCoroutine(GetAllDataAfterLogIn(Loader));
     }
+
+
+    IEnumerator GetAllDataAfterLogIn(GameObject Loader)
+    {
+        ManageFieldsManager.Instance.RetreiveDataForFieldPlants();
+        yield return new WaitForSeconds(2f);
+        if (ManageFieldsManager.Instance.isThereAnyData)
+        {
+
+                auth.SignInWithEmailAndPasswordAsync(LogInEmail.text, LogInPassword.text).ContinueWith(task =>
+                {
+                    if (task.IsCanceled)
+                    {
+                        Debug.LogError("SignInWithEmailAndPasswordAsync was canceled.");
+                        return;
+                    }
+                    if (task.IsFaulted)
+                    {
+                        Debug.LogError("SignInWithEmailAndPasswordAsync encountered an error: " + task.Exception);
+                        return;
+                    }
+
+                    Firebase.Auth.FirebaseUser newUser = task.Result;
+                    isLoggedIn = true;
+                    USERID = newUser.UserId;
+                    AddPrefixToEachUser(newUser.UserId);
+                    Debug.LogFormat("User signed in successfully: {0} ({1})", newUser.DisplayName, newUser.UserId);
+                    ManageFieldsManager.Instance.RetreiveDataForFieldPlants();
+                    //MasterUserManager.Instance.startDailyTimer = PlayerPrefs.GetInt("dailytimer");
+                    // LOADER HERE TO GET DATA FIRST TO CHECK WHAT IS GOING ON WITH THE PLANTS AND CONTRACRS!!!
+
+
+                    MasterUserManager.Instance.startDailyTimer = 1;
+                });
+
+                StartCoroutine(AfterLogIn(isLoggedIn));
+                Debug.Log("there is data");
+                Loader.SetActive(false);
+    
+        }
+        else
+        {
+         
+            {
+                Debug.Log("no data");
+                auth.SignInWithEmailAndPasswordAsync(LogInEmail.text, LogInPassword.text).ContinueWith(task =>
+                {
+                    if (task.IsCanceled)
+                    {
+                        Debug.LogError("SignInWithEmailAndPasswordAsync was canceled.");
+                        return;
+                    }
+                    if (task.IsFaulted)
+                    {
+                        Debug.LogError("SignInWithEmailAndPasswordAsync encountered an error: " + task.Exception);
+                        return;
+                    }
+
+                    Firebase.Auth.FirebaseUser newUser = task.Result;
+                    isLoggedIn = true;
+                    USERID = newUser.UserId;
+                    AddPrefixToEachUser(newUser.UserId);
+                    Debug.LogFormat("User signed in successfully: {0} ({1})", newUser.DisplayName, newUser.UserId);
+                    ManageFieldsManager.Instance.RetreiveDataForFieldPlants();
+                    //MasterUserManager.Instance.startDailyTimer = PlayerPrefs.GetInt("dailytimer");
+                    // LOADER HERE TO GET DATA FIRST TO CHECK WHAT IS GOING ON WITH THE PLANTS AND CONTRACRS!!!
+
+
+                    MasterUserManager.Instance.startDailyTimer = 0;
+                });
+
+                StartCoroutine(AfterLogIn(isLoggedIn));
+                Loader.SetActive(false);
+            }
+    
+    }
+
+}
 
 
     void AddPrefixToEachUser(string userid)

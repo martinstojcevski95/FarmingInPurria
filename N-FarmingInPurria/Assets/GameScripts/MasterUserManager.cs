@@ -60,14 +60,14 @@ public class MasterUserManager : MonoBehaviour
     bool StartDailyTimer;
     public int startDailyTimer;
 
-    public bool forTest;
+    public Text HarvestInfoText;
     private void Awake()
     {
         Instance = this;
         var utcnow = DateTime.UtcNow;
         string currentUTCTime = utcnow.ToShortTimeString();
         PlayerPrefs.SetString("currTime", currentUTCTime);
-        PlayerPrefs.DeleteKey("oneDay");
+        // PlayerPrefs.DeleteKey("oneDay");
         GrowthDaysHolder = PlayerPrefs.GetInt("growthdays");
         Debug.Log(GrowthDaysHolder);
         OneDay = PlayerPrefs.GetFloat("oneDay");
@@ -109,11 +109,26 @@ public class MasterUserManager : MonoBehaviour
 
     }
 
-
+    public void GetWeatherAtOppening()
+    {
+        GetWeatherEveryDay();
+    }
 
     public void GetWeatherEveryDay()
     {
         StartCoroutine(GetRequest("https://api.openweathermap.org/data/2.5/weather?q=London,uk&APPID=511efb82bba4378564f71de9d47f6fae"));
+    }
+
+    public void OpenWeatherFeature(Text weatherInfo)
+    {
+
+        weatherInfo.text = "The weathercast for today is : " + allWeatherStats.weather[0].main + " with " + allWeatherStats.weather[0].description;
+        Debug.Log(allWeatherStats);
+    }
+
+    void WaitForTheWeatherDataAndUpdateThePlantS()
+    {
+
     }
 
     IEnumerator PlantGrowth()
@@ -141,7 +156,7 @@ public class MasterUserManager : MonoBehaviour
                 for (int i = 0; i < FirstRowPlants.Count; i++)
                 {
 
-                    if (FirstRowPlants[i].singlePlant.isDroneAssigned)
+                    if (FirstRowPlants[i].singlePlant.isDroneAssigned && FirstRowPlants[i].singlePlant.isPlantPlanted)
                     {
                         int growthDayIncrementer = FirstRowPlants[0].singlePlant.GrowthDays;
 
@@ -152,9 +167,18 @@ public class MasterUserManager : MonoBehaviour
                         lParameters.Add("GrowthDays", plant.GrowthDays = growthDayIncrementer += 1);
                         //    PlayerPrefs.SetInt("frPlants", plant.GrowthDays);
                         reference.Child("USERS").Child("PURRIAT13d1NlamrYPFHFKouRPtruKUjh1").Child("GAMESPACE").Child("CONTRACT" + 0).Child("PLANTS").Child("PLANT" + i).UpdateChildrenAsync(lParameters);
+
+                        if (FirstRowPlants[i].singlePlant.GrowthDays >= 2)
+                        {
+                            Debug.Log("harvest for the  first row");
+
+                                HarvestInfoText.text = "The plants in the first row  are ready for harvesting";
+                   
+             
+                        }
                     }
 
-                    if (SecondRowPlants[i].singlePlant.isDroneAssigned)
+                    if (SecondRowPlants[i].singlePlant.isDroneAssigned && SecondRowPlants[i].singlePlant.isPlantPlanted)
                     {
                         int growthDayIncrementer = SecondRowPlants[0].singlePlant.GrowthDays;
                         Dictionary<string, object> lParameters = new Dictionary<string, object>();
@@ -163,8 +187,14 @@ public class MasterUserManager : MonoBehaviour
                         lParameters.Add("GrowthDays", plant.GrowthDays = growthDayIncrementer += 1);
 
                         reference.Child("USERS").Child("PURRIAT13d1NlamrYPFHFKouRPtruKUjh1").Child("GAMESPACE").Child("CONTRACT" + 1).Child("PLANTS").Child("PLANT" + i).UpdateChildrenAsync(lParameters);
+
+                        if (FirstRowPlants[i].GrowthDays >= 44)
+                        {
+                            Debug.Log("harvest for the  first row");
+                            HarvestInfoText.text = "The plants in the second row  are ready for harvesting";
+                        }
                     }
-                    if (ThirdowPlants[i].singlePlant.isDroneAssigned)
+                    if (ThirdowPlants[i].singlePlant.isDroneAssigned && ThirdowPlants[i].singlePlant.isPlantPlanted)
                     {
                         int growthDayIncrementer = ThirdowPlants[0].singlePlant.GrowthDays;
                         Dictionary<string, object> lParameters = new Dictionary<string, object>();
@@ -173,8 +203,14 @@ public class MasterUserManager : MonoBehaviour
                         lParameters.Add("GrowthDays", plant.GrowthDays = growthDayIncrementer += 1);
 
                         reference.Child("USERS").Child("PURRIAT13d1NlamrYPFHFKouRPtruKUjh1").Child("GAMESPACE").Child("CONTRACT" + 1).Child("PLANTS").Child("PLANT" + i).UpdateChildrenAsync(lParameters);
+
+                        if (FirstRowPlants[i].GrowthDays >= 44)
+                        {
+                            Debug.Log("harvest for the  first row");
+                            HarvestInfoText.text = "The plants in the third row  are ready for harvesting";
+                        }
                     }
-                    if (FourthRowPlants[i].singlePlant.isDroneAssigned)
+                    if (FourthRowPlants[i].singlePlant.isDroneAssigned && FourthRowPlants[i].singlePlant.isPlantPlanted)
                     {
                         int growthDayIncrementer = FourthRowPlants[0].singlePlant.GrowthDays;
                         Dictionary<string, object> lParameters = new Dictionary<string, object>();
@@ -183,11 +219,19 @@ public class MasterUserManager : MonoBehaviour
                         lParameters.Add("GrowthDays", plant.GrowthDays = growthDayIncrementer += 1);
 
                         reference.Child("USERS").Child("PURRIAT13d1NlamrYPFHFKouRPtruKUjh1").Child("GAMESPACE").Child("CONTRACT" + 1).Child("PLANTS").Child("PLANT" + i).UpdateChildrenAsync(lParameters);
+
+                        if (FirstRowPlants[i].GrowthDays >= 44)
+                        {
+                            Debug.Log("harvest for the  first row");
+                            HarvestInfoText.text = "The plants in the fourth row  are ready for harvesting";
+                        }
                     }
                 }
+
+
             }
 
-            ManageFieldsManager.Instance.RetreiveDataForFieldPlants();
+            //  ManageFieldsManager.Instance.RetreiveDataForFieldPlants();
         }
         else
         {
@@ -273,12 +317,17 @@ public class MasterUserManager : MonoBehaviour
 
 
            }
+           else
+           {
+               Debug.Log("nema veke dogovori");
+           }
            //else 
            //{
            //    MasterContractID = 0;
            //    PlayerPrefs.SetInt("mstrcontractcounter", MasterContractID);
            //    Debug.Log("no more contracts");
            //}
+      
            ManageContract.Instance.RetreiveDataForSelectedConract();
 
        }
@@ -286,6 +335,25 @@ public class MasterUserManager : MonoBehaviour
    });
 
     }
+
+    public void CallItAgain(InputField field)
+    {
+        StartCoroutine(CheckForActiveContracts(field));
+       
+
+    }
+    IEnumerator CheckForActiveContracts(InputField field)
+    {
+        yield return new WaitUntil(() => ManageContract.Instance.areThereActiveContracts == false);
+        yield return new WaitForSeconds(2f);
+        Debug.Log("nema moze da se staj na 0 tajamerot");
+        ManageContract.Instance.RetreiveDataForSelectedConract();
+        field.text = "100";
+        startDailyTimer = 0;
+        OneDay = 0;
+    }
+
+
 
 
     public void GetMasterContractIDCounter()
@@ -310,7 +378,6 @@ public class MasterUserManager : MonoBehaviour
 
 
     }
-
 
 
     /// <summary>
@@ -431,9 +498,10 @@ public class MasterUserManager : MonoBehaviour
     {
         MasterContractID = PlayerPrefs.GetInt("mstrcontractcounter", MasterContractID);
         int howMuchNodes = int.Parse(HowMuchNodes.text);
-
+            
         if (MasterContractID < 4)
         {
+        
 
             //new object properties
             ContractProperties contractProperties = new ContractProperties();
@@ -444,6 +512,7 @@ public class MasterUserManager : MonoBehaviour
             MasterContractID += 1;
             PlayerPrefs.SetInt("mstrcontractcounter", MasterContractID);
             reference.Child("USERS").Child(LoginAndRegisterManager.Instance.CustomMasterUserID).Child("GAMESPACE").Child("CONTRACT" + MasterContractID).SetRawJsonValueAsync(ToJson);
+     
         }
         else
         {
@@ -531,8 +600,16 @@ public class MasterUserManager : MonoBehaviour
 
     }
 
+    public void SaveOneDayCounterOnAppQuit()
+    {
+        PlayerPrefs.SetFloat("oneDay", OneDay);
+        Application.Quit(1);
+
+    }
     void Update()
     {
+
+
         //   if (StartDailyTimer)
         if (startDailyTimer == 1)
         {
@@ -554,6 +631,11 @@ public class MasterUserManager : MonoBehaviour
             {
                 WaitAfterIncreasingTheGrowthText.text = "The growth was increased, you need to wait for the drone to work on the plants for another 24 hours so you can increase the growth again";
             }
+        }
+        else
+        {
+            WaitAfterIncreasingTheGrowthText.text = "";
+            AddGrowthButtonFromMasterUser.interactable = true;
         }
 
 
@@ -839,7 +921,7 @@ public class MasterUserManager : MonoBehaviour
 
 
 
-
+    public bool ForTesting;
     //Weather classes 
 
     [Serializable]

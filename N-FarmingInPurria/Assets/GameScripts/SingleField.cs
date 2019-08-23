@@ -142,7 +142,7 @@ public class SingleField : MonoBehaviour
 
     IEnumerator SavePlantToDB(Button plantButton)
     {
-
+       // MasterUserManager.Instance.startDailyTimer = 0;
         SinglePlant plant = new SinglePlant();
         if(!singlePlant.isItClickable)
         {

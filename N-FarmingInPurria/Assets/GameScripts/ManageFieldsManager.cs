@@ -13,7 +13,7 @@ public class ManageFieldsManager : MonoBehaviour
     public AllContractsAndPlants allContractsAndPlants;
     // Start is called before the first frame update
     public bool isThereAnyData;
-
+    public bool CheckerForDataForContracts;
     private void Awake()
     {
         Instance = this;
@@ -23,6 +23,7 @@ public class ManageFieldsManager : MonoBehaviour
     {
         FirebaseApp.DefaultInstance.SetEditorDatabaseUrl(DATABASEURL);
         reference = FirebaseDatabase.DefaultInstance.RootReference;
+        CheckerForDataForContracts = true;
 
     }
 
@@ -52,6 +53,7 @@ public class ManageFieldsManager : MonoBehaviour
                 allContractsAndPlants = new AllContractsAndPlants();
                 //  allPlants = new AllPlants();
                 string res = snapshot.GetRawJsonValue();
+   
                 allContractsAndPlants = JsonUtility.FromJson<AllContractsAndPlants>(res);
                 // allPlants = JsonUtility.FromJson<AllPlants>(res);
 
@@ -177,6 +179,7 @@ public class ManageFieldsManager : MonoBehaviour
               else
                 {
                     isThereAnyData = false;
+                    CheckerForDataForContracts = false;
                     Debug.Log("null, no data ");
                     MasterUserManager.Instance.MasterContractID = 0;
                     PlayerPrefs.SetInt("mstrcontractcounter", MasterUserManager.Instance.MasterContractID);
